@@ -10,6 +10,8 @@ var userSchema = mongoose.Schema({
 });
 
 userSchema.methods.comparePassword = function(attemptedPassword, callback) {
+  console.log('attemptedPassword', attemptedPassword);
+  console.log('this.pw', this.password);
   bcrypt.compare(attemptedPassword, this.password, function(err, isMatch) {
     callback(isMatch);
   });
@@ -20,6 +22,13 @@ userSchema.methods.hashPassword = function() {
   return cipher(this.password, null, null).bind(this)
     .then(function(hash) {
       this.password = hash;
+      // this.save(function(err) {
+      //   if (err) {
+      //     console.log('error');
+      //   }
+      // });
+      // this.save();
+      // console.log('this.password', this.password, this.username);
     });
 };
 
