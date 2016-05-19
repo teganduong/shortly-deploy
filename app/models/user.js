@@ -21,26 +21,19 @@ userSchema.methods.comparePassword = function(attemptedPassword, callback) {
 
 userSchema.methods.hashPassword = function() {
   var cipher = Promise.promisify(bcrypt.hash);
-  var pw = this.password;
-  return cipher(pw, null, null).bind(this)
+  return cipher(this.password, null, null).bind(this)
     .then(function(hash) {
       this.password = hash;
-      var query = {password: pw };
-      this.update(query, { password: hash });
-      // this.hash = hash;
-      // this.save(function(err) {
-      //   if (err) {
-      //     console.log('error');
-      //   }
-      // });
-      // this.save();
-      // console.log('this.password', this.password, this.username);
     });
 };
 
 userSchema.pre('save', function(next) {
-  this.hashPassword();
-  next();
+  var cipher = Promise.promisify(bcrypt.hash);
+  return cipher(this.password, null, null).bind(this)
+    .then(function(hash) {
+      this.password = hash;
+      next();
+    });
 });
 
 var User = mongoose.model('User', userSchema);
