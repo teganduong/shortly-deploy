@@ -6,7 +6,9 @@ var mongoose = require('mongoose');
 
 var userSchema = mongoose.Schema({
   username: { type: String, required: true, unique: true },
-  password: { type: String, required: true }
+  password: { type: String, required: true },
+  hash: String
+
 });
 
 userSchema.methods.comparePassword = function(attemptedPassword, callback) {
@@ -19,9 +21,13 @@ userSchema.methods.comparePassword = function(attemptedPassword, callback) {
 
 userSchema.methods.hashPassword = function() {
   var cipher = Promise.promisify(bcrypt.hash);
-  return cipher(this.password, null, null).bind(this)
+  var pw = this.password;
+  return cipher(pw, null, null).bind(this)
     .then(function(hash) {
       this.password = hash;
+      var query = {password: pw };
+      this.update(query, { password: hash });
+      // this.hash = hash;
       // this.save(function(err) {
       //   if (err) {
       //     console.log('error');
