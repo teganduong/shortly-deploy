@@ -12,8 +12,6 @@ var userSchema = mongoose.Schema({
 });
 
 userSchema.methods.comparePassword = function(attemptedPassword, callback) {
-  console.log('attemptedPassword', attemptedPassword);
-  console.log('this.pw', this.password);
   bcrypt.compare(attemptedPassword, this.password, function(err, isMatch) {
     callback(isMatch);
   });
