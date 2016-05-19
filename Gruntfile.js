@@ -28,7 +28,7 @@ module.exports = function(grunt) {
     uglify: {
       target: {
         files: {
-          'public/dist/<%= pkg.name %>.min.js': ['public/client/**/*.js']
+          'public/dist/<%= pkg.name %>.min.js': '<%= concat.dist.dest %>'
         }
       }
     },
@@ -94,7 +94,7 @@ module.exports = function(grunt) {
     'mochaTest'
   ]);
 
-  grunt.registerTask('build', ['eslint', 'mochaTest', 'concat', 'uglify']);
+  grunt.registerTask('build', ['eslint', 'mochaTest', 'concat', 'uglify', 'cssmin']);
   grunt.registerTask('default', ['build']);
 
   grunt.registerTask('upload', function(n) {
